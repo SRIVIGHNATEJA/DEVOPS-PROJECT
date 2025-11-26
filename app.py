@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
@@ -6,6 +6,12 @@ app = Flask(__name__)
 @app.route('/')
 def hello_world():
     return 'Hello, DevOps World!'
+
+
+@app.route('/health')
+def health():
+    """Liveness probe endpoint for Kubernetes / Docker."""
+    return jsonify(status='healthy'), 200
 
 
 if __name__ == '__main__':
