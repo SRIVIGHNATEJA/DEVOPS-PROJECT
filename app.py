@@ -14,5 +14,11 @@ def health():
     return jsonify(status='healthy'), 200
 
 
+@app.route('/ready')
+def ready():
+    """Readiness probe endpoint for Kubernetes / load balancers."""
+    return jsonify(status='ready'), 200
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
