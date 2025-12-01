@@ -27,3 +27,9 @@ def test_ready_probe(client):
     assert response.status_code == 200
     json_data = response.get_json()
     assert json_data['status'] == 'ready'
+
+
+def test_metrics_endpoint(client):
+    response = client.get('/metrics')
+    assert response.status_code == 200
+    assert b"flask_http_request_duration_seconds" in response.data or b"app_info" in response.data
