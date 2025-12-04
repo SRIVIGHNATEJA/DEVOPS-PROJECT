@@ -32,4 +32,6 @@ def test_ready_probe(client):
 def test_metrics_endpoint(client):
     response = client.get('/metrics')
     assert response.status_code == 200
-    assert b"flask_http_request_duration_seconds" in response.data or b"app_info" in response.data
+    has_duration = b"flask_http_request_duration_seconds" in response.data
+    has_info = b"app_info" in response.data
+    assert has_duration or has_info

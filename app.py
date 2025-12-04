@@ -3,7 +3,10 @@ from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
 
+# Expose standard Prometheus metrics at /metrics
 metrics = PrometheusMetrics(app)
+
+# Static information metric for build/version tracking
 metrics.info('app_info', 'Application Information', version='1.0.0')
 
 
