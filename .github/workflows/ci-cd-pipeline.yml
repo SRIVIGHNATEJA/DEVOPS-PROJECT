@@ -49,6 +49,9 @@ jobs:
           image-ref: 'devops-project:scan-${{ github.sha }}'
           format: 'table'
           exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
   build-and-push:
     name: Build & Push Container Image
