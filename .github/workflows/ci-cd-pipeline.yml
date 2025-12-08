@@ -32,9 +32,27 @@ jobs:
       - name: Run Pytest Suite
         run: pytest -v
 
+  security-scan:
+    name: DevSecOps Vulnerability Scan (Trivy)
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Build Local Docker Image for Scanning
+        run: docker build -t devops-project:scan-${{ github.sha }} .
+
+      - name: Run Aqua Security Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'devops-project:scan-${{ github.sha }}'
+          format: 'table'
+          exit-code: '0'
+
   build-and-push:
     name: Build & Push Container Image
-    needs: lint-and-test
+    needs: [lint-and-test, security-scan]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
