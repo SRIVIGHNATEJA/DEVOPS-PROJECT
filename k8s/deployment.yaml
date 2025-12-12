@@ -21,6 +21,11 @@ spec:
         app: devops-app
         tier: backend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
       containers:
         - name: devops-app
           image: srivighnateja/devops-project:latest
@@ -28,6 +33,13 @@ spec:
           ports:
             - containerPort: 5000
               name: http
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
           livenessProbe:
             httpGet:
               path: /health
