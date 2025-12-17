@@ -1,0 +1,48 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: devops-project:local
+    container_name: devops-flask-app
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    networks:
+      - devops-network
+    environment:
+      - FLASK_ENV=production
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: devops-prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks:
+      - devops-network
+    depends_on:
+      - app
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: devops-grafana
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - devops-network
+    depends_on:
+      - prometheus
+
+networks:
+  devops-network:
+    driver: bridge
